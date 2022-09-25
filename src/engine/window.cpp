@@ -19,6 +19,9 @@ std::unique_ptr<Camera> Window::camera;
 int Window::height;
 int Window::width;
 
+int x = 0; 
+int y = 0;
+
 Window::Window(int w, int h)
 {
     Window::height = h;
@@ -107,6 +110,9 @@ void Camera::event()
         } else if (zoomScale >= 10) {
             zoomScale = 10;
         }
+
+        SDL_GetMouseState(&x, &y);
+        std::cout << "zooming";
     }
 }
 
@@ -114,7 +120,7 @@ bool Camera::inCamera(float x, float y)
 {
     bool inX = x >= this->dest.x && x <= (this->dest.x + Window::camera->dest.w);
     bool inY = y >= this->dest.y && y <= (this->dest.y + Window::camera->dest.h);
-    //return true;
+    // return true;
     return inX && inY;
 }
 
@@ -125,15 +131,11 @@ float Camera::getZoomScale()
 
 void Camera::update()
 {
-    int x, y;
-    Uint32 buttons;
-    buttons = SDL_GetMouseState(&x, &y);
-
     this->position += this->velocity;
-    
+
     // camera position
-    this->dest.x = this->position.x - x * (1 / zoomScale);
-    this->dest.y = this->position.y - y * (1 / zoomScale);
+    this->dest.x = this->position.x- x * (1 / zoomScale);
+    this->dest.y = this->position.y- y * (1 / zoomScale);;
 
     // renderable size
     this->dest.w = (1 / this->zoomScale) * this->src.w;

@@ -59,7 +59,7 @@ void StateLoop::update()
 
 void StateLoop::handleEvent()
 {
-    SDL_PumpEvents(); // make sure we have the latest mouse state.
+    //SDL_PumpEvents();
 
     if (SDL_PollEvent(StateLoop::event.get()) != 0) {
         if (StateLoop::event->type == SDL_QUIT) {
