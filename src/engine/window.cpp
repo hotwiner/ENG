@@ -1,6 +1,7 @@
 #include "../include/engine/window.h"
 #include "../include/engine/engine.h"
 #include "../include/util/sdl_util.h"
+#include "../../setup_info.h"
 #include <SDL2/SDL_rect.h>
 #include <SDL2/SDL_render.h>
 #include <SDL2/SDL_timer.h>
@@ -141,6 +142,7 @@ void Camera::update()
     this->dest.w = (1 / this->zoomScale) * this->src.w;
     this->dest.h = (1 / this->zoomScale) * this->src.h;
 
+    #ifdef DEBUG
     std::cout << "==============================\n";
     std::cout << " Camera X: " << this->dest.x << "\n";
     std::cout << " Camera Y: " << this->dest.y << "\n";
@@ -148,4 +150,5 @@ void Camera::update()
     std::cout << " Renderable size W: " << this->dest.w << "\n";
     std::cout << " Renderable size H: " << this->dest.h << "\n";
     std::cout << " Zoom Scale: " << this->zoomScale << "\n";
+    #endif
 }
