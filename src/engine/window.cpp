@@ -112,7 +112,7 @@ void Camera::event()
         }
 
         SDL_GetMouseState(&x, &y);
-        std::cout << "zooming";
+        std::cout << "zooming\n";
     }
 }
 
@@ -134,10 +134,18 @@ void Camera::update()
     this->position += this->velocity;
 
     // camera position
-    this->dest.x = this->position.x- x * (1 / zoomScale);
-    this->dest.y = this->position.y- y * (1 / zoomScale);;
+    this->dest.x = this->position.x- x * (1 / this->zoomScale);
+    this->dest.y = this->position.y- y * (1 / this->zoomScale);
 
     // renderable size
     this->dest.w = (1 / this->zoomScale) * this->src.w;
     this->dest.h = (1 / this->zoomScale) * this->src.h;
+
+    std::cout << "==============================\n";
+    std::cout << " Camera X: " << this->dest.x << "\n";
+    std::cout << " Camera Y: " << this->dest.y << "\n";
+    std::cout << " Camera Velocity: " << this->velocity.x << ", " << this->velocity.y << "\n";
+    std::cout << " Renderable size W: " << this->dest.w << "\n";
+    std::cout << " Renderable size H: " << this->dest.h << "\n";
+    std::cout << " Zoom Scale: " << this->zoomScale << "\n";
 }
