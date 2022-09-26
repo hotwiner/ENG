@@ -113,7 +113,6 @@ void Camera::event()
         }
 
         SDL_GetMouseState(&x, &y);
-        std::cout << "zooming\n";
     }
 }
 
@@ -142,7 +141,7 @@ void Camera::update()
     this->dest.w = (1 / this->zoomScale) * this->src.w;
     this->dest.h = (1 / this->zoomScale) * this->src.h;
 
-    #ifdef DEBUG
+#if DEBUG
     std::cout << "==============================\n";
     std::cout << " Camera X: " << this->dest.x << "\n";
     std::cout << " Camera Y: " << this->dest.y << "\n";
@@ -150,5 +149,5 @@ void Camera::update()
     std::cout << " Renderable size W: " << this->dest.w << "\n";
     std::cout << " Renderable size H: " << this->dest.h << "\n";
     std::cout << " Zoom Scale: " << this->zoomScale << "\n";
-    #endif
+#endif
 }

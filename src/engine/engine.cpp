@@ -44,12 +44,12 @@ void StateLoop::update()
 {
     this->handleEvent();
 
-    this->startTime = SDL_GetTicks();
+    this->startTime = SDL_GetTicks64();
 
     this->entityMan->update();
     this->window->update();
 
-    this->deltaTime = SDL_GetTicks() - this->startTime;
+    this->deltaTime = SDL_GetTicks64() - this->startTime;
     if (this->timeDelay > this->deltaTime) {
 
         SDL_Delay(this->timeDelay - this->deltaTime);

@@ -14,7 +14,7 @@ int main()
 
     // populates entityMan
     for (int i = 0; i < entityPopulation; i++) {
-        std::shared_ptr<Entity> entity_buffer = std::make_shared<Entity>(); // --------------------------- bunu niye shared yaptin?
+        std::shared_ptr<Entity> entity_buffer = std::make_shared<Entity>();
         entity_buffer->addComponent<Sprite>("/assests/man2.gif", 65, 64);
         //starting position
         entity_buffer->setPos( rand()%1000,rand()%1000);
