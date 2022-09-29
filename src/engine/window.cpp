@@ -3,11 +3,6 @@
 #include "../include/engine/engine.h"
 #include "../include/util/sdl_util.h"
 #include <SDL2/SDL_events.h>
-#include <SDL2/SDL_keycode.h>
-#include <SDL2/SDL_rect.h>
-#include <SDL2/SDL_render.h>
-#include <SDL2/SDL_timer.h>
-#include <SDL2/SDL_video.h>
 #include <cmath>
 #include <cstddef>
 #include <iostream>
@@ -56,42 +51,26 @@ Camera::Camera()
 void Camera::event()
 {
     speed = 10 * (1 / zoomScale);
-    if (StateLoop::event->type == SDL_KEYDOWN && StateLoop::event->key.repeat == 0) {
-        // Adjust the velocity
-        // std::cout << "key pressed" << std::endl;
-        if (StateLoop::event->key.repeat == 0) {
-            switch (StateLoop::event->key.keysym.sym) {
-            case SDLK_w:
-                this->velocity.y -= speed;
-                break;
-            case SDLK_s:
-                this->velocity.y += speed;
-                break;
-            case SDLK_a:
-                this->velocity.x -= speed;
-                break;
-            case SDLK_d:
-                this->velocity.x += speed;
-                break;
-            }
-        }
+
+    SDL_PumpEvents();
+    if (StateLoop::keyboardState[SDL_SCANCODE_W]) {
+        this->velocity.y = -speed;
     }
-    if (StateLoop::event->type == SDL_KEYUP && StateLoop::event->key.repeat == 0) {
-        // Adjust the velocity
-        switch (StateLoop::event->key.keysym.sym) {
-        case SDLK_w:
-            this->velocity.y = 0;
-            break;
-        case SDLK_s:
-            this->velocity.y = 0;
-            break;
-        case SDLK_a:
-            this->velocity.x = 0;
-            break;
-        case SDLK_d:
-            this->velocity.x = 0;
-            break;
-        }
+    if (StateLoop::keyboardState[SDL_SCANCODE_S]) {
+        this->velocity.y = speed;
+    }
+    if (StateLoop::keyboardState[SDL_SCANCODE_A]) {
+        this->velocity.x = -speed;
+    }
+    if (StateLoop::keyboardState[SDL_SCANCODE_D]) {
+        this->velocity.x = speed;
+    }
+
+    if (!(StateLoop::keyboardState[SDL_SCANCODE_W] || StateLoop::keyboardState[SDL_SCANCODE_S])) {
+        this->velocity.y = 0;
+    }
+    if (!(StateLoop::keyboardState[SDL_SCANCODE_A] || StateLoop::keyboardState[SDL_SCANCODE_D])) {
+        this->velocity.x = 0;
     }
 
     if (StateLoop::event->type == SDL_MOUSEWHEEL) {

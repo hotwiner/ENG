@@ -24,6 +24,7 @@ void Engine::terminate()
 }
 
 std::unique_ptr<SDL_Event> StateLoop::event;
+const Uint8* StateLoop::keyboardState = SDL_GetKeyboardState(NULL);
 bool StateLoop::quit;
 
 StateLoop::StateLoop(int width, int height)
@@ -59,8 +60,6 @@ void StateLoop::update()
 
 void StateLoop::handleEvent()
 {
-    //SDL_PumpEvents();
-
     if (SDL_PollEvent(StateLoop::event.get()) != 0) {
         if (StateLoop::event->type == SDL_QUIT) {
             StateLoop::stop();

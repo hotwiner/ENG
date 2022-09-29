@@ -1,9 +1,8 @@
 #include "../include/engine/engine.h"
-#include <cstdlib>
 #include <iostream>
 #include <memory>
 
-const int entityPopulation = 1000;
+const int entityPopulation = 100000;
 
 int main()
 {
@@ -17,9 +16,9 @@ int main()
         std::shared_ptr<Entity> entity_buffer = std::make_shared<Entity>();
         entity_buffer->addComponent<Sprite>("/assests/man2.gif", 65, 64);
         //starting position
-        entity_buffer->setPos( rand()%1000,rand()%1000);
+        entity_buffer->setPos( rand()%100000,rand()%100000);
         //initial movement vector
-        entity_buffer->addComponent<Transform>(rand()%10000,rand()%10000, 0);
+        entity_buffer->addComponent<Transform>(rand()%10000,rand()%10000, 100);
         //initial sprite scale
         entity_buffer->getComponent<Sprite>()->scale(1);
         engine->stateLoop->entityMan->addEntity(entity_buffer);

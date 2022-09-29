@@ -20,6 +20,7 @@ public:
     std::unique_ptr<Window> window;
     // Handles key inputs ect.
     static std::unique_ptr<SDL_Event> event;
+    static const Uint8* keyboardState;
     // Handles entities 
     std::unique_ptr<EntityManager> entityMan;
     
