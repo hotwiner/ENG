@@ -25,6 +25,7 @@ public:
     // This includes all useable textures and their surfaces
     static std::map<const std::string, std::pair<std::shared_ptr<SDL_Texture>, std::shared_ptr<SDL_Surface>>> assetmap;
     static std::unique_ptr<CollisionMap> collmap;
+
 private:
     std::vector<int> freeIDs;
     int setEntityID();
@@ -34,15 +35,25 @@ private:
 
 class CollisionMap {
     friend class EntityManager;
+
 public:
-    CollisionMap(int width=1000, int height=1000);
+    CollisionMap(int width = 1000, int height = 1000);
     bool posOccupied(int x, int y);
+    bool posOccupied(vec2 pos);
     bool occupyPos(int x, int y);
+    bool occupyPos(vec2 pos);
     void unOccupyPos(int x, int y);
+    void unOccupyPos(vec2 pos);
     bool updateOccupancy(int src_x, int src_y, int target_x, int target_y);
+    bool updateOccupancy(vec2 source, vec2 target);
+    vec2 toGridPos(vec2 pos);
     void reset();
+    static int gridWidth;
+    static int gridHeight;
+
 protected:
-    static std::unique_ptr<std::bitset<10000000>> map;
+    std::bitset<10000000UL> map;
+    
 private:
     int width;
     int height;

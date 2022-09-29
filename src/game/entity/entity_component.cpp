@@ -1,5 +1,7 @@
 #include "../../include/game/entity/entity_component.h"
+#include "../../include/game/entity_manager.h"
 #include <SDL2/SDL_stdinc.h>
+#include <cmath>
 #include <memory>
 #include <typeinfo>
 
@@ -55,4 +57,12 @@ void Entity::update()
 vec2 Entity::getPosition()
 {
     return this->position;
+}
+
+vec2 Entity::getGridPosition()
+{
+    return {
+        std::floor(this->position.x / CollisionMap::gridWidth) + 1,
+        std::floor(this->position.y / CollisionMap::gridHeight) + 1
+    };
 }

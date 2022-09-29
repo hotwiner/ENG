@@ -34,6 +34,7 @@ public:
 
     int getID();
     vec2 getPosition();
+    vec2 getGridPosition();
     std::string getName();
     std::string getTag();
 

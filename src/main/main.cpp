@@ -19,12 +19,15 @@ int main()
         // starting position
         entity_buffer->setPos(0, 0);
         // initial movement vector
-        entity_buffer->addComponent<Transform>(500, 500, 1);
+        entity_buffer->addComponent<Transform>(600, 600, 2, true);
         // initial sprite scale
         entity_buffer->getComponent<Sprite>()->scale(1);
         engine->stateLoop->entityMan->addEntity(entity_buffer);
     }
-
+    for (int i = 0; i < 1000; i++) {
+        auto p = engine->stateLoop->entityMan->collmap->toGridPos({500, static_cast<float>(i)});
+        engine->stateLoop->entityMan->collmap->occupyPos(p);
+    }
     std::cout << "Done generating " << entityPopulation << " entities.\n";
 
     engine->launch();

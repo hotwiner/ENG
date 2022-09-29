@@ -7,14 +7,16 @@
 
 class Transform : public Component {
 public:
-    Transform(float targetX = 0, float targetY = 0, float s = 0);
+    Transform(float targetX = 0, float targetY = 0, float s = 0, bool enableCollider = false);
     virtual ~Transform();
     void init() override;
     void update() override;
     void setTarget(vec2 t);
+
 protected:
     vec2 heading;
     float speed;
+    bool enableCollider;
 
 private:
     vec2 move();
