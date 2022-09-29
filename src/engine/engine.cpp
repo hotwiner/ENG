@@ -43,10 +43,9 @@ void StateLoop::init()
 // This updates everything
 void StateLoop::update()
 {
-    this->handleEvent();
-
     this->startTime = SDL_GetTicks64();
 
+    this->handleEvent();
     this->entityMan->update();
     this->window->update();
 

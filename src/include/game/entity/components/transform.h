@@ -12,13 +12,12 @@ public:
     void init() override;
     void update() override;
     void setTarget(vec2 t);
-
 protected:
     vec2 heading;
     float speed;
 
 private:
-    void move();
+    vec2 move();
     vec2 target;
     vec2 velocity;
 };

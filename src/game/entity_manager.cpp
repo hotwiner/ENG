@@ -7,6 +7,12 @@
 
 std::map<const std::string, std::pair<std::shared_ptr<SDL_Texture>, std::shared_ptr<SDL_Surface>>> EntityManager::assetmap;
 std::vector<std::shared_ptr<Entity>> EntityManager::entites;
+std::unique_ptr<CollisionMap> EntityManager::collmap;
+
+EntityManager::EntityManager()
+{
+    collmap = std::make_unique<CollisionMap>();
+}
 
 void EntityManager::init()
 {
@@ -58,4 +64,49 @@ void EntityManager::deleteEntity(std::shared_ptr<Entity> entity)
 {
     // find and delete entity
     this->freeIDs.push_back(entity->id);
+}
+
+std::unique_ptr<std::bitset<10000000>> CollisionMap::map = std::make_unique<std::bitset<10000000>>();
+
+CollisionMap::CollisionMap(int w, int h)
+    : width(w)
+    , height(h)
+{
+}
+
+bool CollisionMap::occupyPos(int x, int y)
+{
+    if (!posOccupied(x, y)) {
+        CollisionMap::map.get()[(y - 1) * this->width + x] = 1;
+        return true;
+    }
+    return false;
+}
+
+void CollisionMap::unOccupyPos(int x, int y)
+{
+    CollisionMap::map.get()[(y - 1) * this->width + x] = 0;
+}
+
+bool CollisionMap::updateOccupancy(int src_x, int src_y, int target_x, int target_y)
+{
+    if (occupyPos(target_x, target_y)) {
+        unOccupyPos(src_x, src_y);
+        return true;
+    }
+
+    return false;
+}
+
+bool CollisionMap::posOccupied(int x, int y)
+{
+    if (CollisionMap::map.get()[(y - 1) * this->width + x] == 1) {
+        return true;
+    }
+    return false;
+}
+
+void CollisionMap::reset()
+{
+    CollisionMap::map->reset();
 }

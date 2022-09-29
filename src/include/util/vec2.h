@@ -39,14 +39,23 @@ struct vec2 {
         return { .x = (this->x * predicate), .y = (this->y * predicate) };
     }
 
-    bool operator==(vec2 &pos) const
+    bool operator<(vec2& pos) const
     {
-        return this->x == pos.x && this->y == pos.y;
+        return ((this->x < pos.x)) && ((this->y < pos.y));
+    }
+    bool operator>(vec2& pos) const
+    {
+        return ((this->x > pos.x)) && ((this->y > pos.y));
     }
 
-    bool operator!=(vec2 &pos) const
+    bool operator==(vec2& pos) const
     {
-        return this->x != pos.x && this->y != pos.y;
+        return (std::abs(this->x - pos.x)) < 1.3f && (std::abs(this->y - pos.y) < 1.3f);
+    }
+
+    bool operator!=(vec2& pos) const
+    {
+        return (std::abs(this->x - pos.x)) > 1.3f && (std::abs(this->y - pos.y) > 1.3f);
     }
 
     vec2 normalize()
