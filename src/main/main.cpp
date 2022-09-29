@@ -17,7 +17,7 @@ int main()
         std::shared_ptr<Entity> entity_buffer = std::make_shared<Entity>();
         entity_buffer->addComponent<Sprite>("/assests/man2.gif", 65, 64);
         //starting position
-        entity_buffer->setPos( rand()%500,rand()%500);
+        entity_buffer->setPos( rand()%1000,rand()%1000);
         //initial movement vector
         entity_buffer->addComponent<Transform>(rand()%10000,rand()%10000, 0);
         //initial sprite scale

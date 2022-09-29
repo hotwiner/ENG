@@ -49,8 +49,8 @@ void Window::render()
 
 Camera::Camera()
 {
-    this->src = { static_cast<int>(position.x), static_cast<int>(position.y), 1920, 1080 };
-    this->dest = { static_cast<int>(position.x), static_cast<int>(position.y), 1920, 1080 };
+    this->src = { static_cast<int>(position.x), static_cast<int>(position.y), Window::width, Window::height };
+    this->dest = { static_cast<int>(position.x), static_cast<int>(position.y), Window::width, Window::height };
 }
 
 void Camera::event()
