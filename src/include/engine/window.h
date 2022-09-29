@@ -45,10 +45,11 @@ public:
     bool inCamera(float x, float y);
     SDL_Rect src;
     SDL_Rect dest;
+    vec2 worldToScreen(float world_x, float world_y);
+    vec2 screenToWorld(float screen_x, float screen_y);
 
-   
     int mapHeight = 10000;
-    int mapWidth  = 10000;
+    int mapWidth = 10000;
 
 private:
     int speed = 10;

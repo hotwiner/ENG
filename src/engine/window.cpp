@@ -1,7 +1,9 @@
 #include "../include/engine/window.h"
+#include "../../setup_info.h"
 #include "../include/engine/engine.h"
 #include "../include/util/sdl_util.h"
-#include "../../setup_info.h"
+#include <SDL2/SDL_events.h>
+#include <SDL2/SDL_keycode.h>
 #include <SDL2/SDL_rect.h>
 #include <SDL2/SDL_render.h>
 #include <SDL2/SDL_timer.h>
@@ -20,9 +22,6 @@ std::unique_ptr<Camera> Window::camera;
 int Window::height;
 int Window::width;
 
-int x = 0; 
-int y = 0;
-
 Window::Window(int w, int h)
 {
     Window::height = h;
@@ -36,7 +35,6 @@ Window::Window(int w, int h)
 void Window::update()
 {
     this->camera->update();
-    // sdl_utils::render_whole(Window::windowSurface, Window::windowRenderer);
 }
 
 void Window::clean()
@@ -57,70 +55,83 @@ Camera::Camera()
 
 void Camera::event()
 {
+    speed = 10 * (1 / zoomScale);
     if (StateLoop::event->type == SDL_KEYDOWN && StateLoop::event->key.repeat == 0) {
         // Adjust the velocity
         // std::cout << "key pressed" << std::endl;
-        switch (StateLoop::event->key.keysym.sym) {
-        case SDLK_UP:
-            this->velocity.y -= speed;
-            break;
-        case SDLK_DOWN:
-            this->velocity.y += speed;
-            break;
-        case SDLK_LEFT:
-            this->velocity.x -= speed;
-            break;
-        case SDLK_RIGHT:
-            this->velocity.x += speed;
-            break;
+        if (StateLoop::event->key.repeat == 0) {
+            switch (StateLoop::event->key.keysym.sym) {
+            case SDLK_w:
+                this->velocity.y -= speed;
+                break;
+            case SDLK_s:
+                this->velocity.y += speed;
+                break;
+            case SDLK_a:
+                this->velocity.x -= speed;
+                break;
+            case SDLK_d:
+                this->velocity.x += speed;
+                break;
+            }
         }
     }
-    // If a key was released
-    else if (StateLoop::event->type == SDL_KEYUP && StateLoop::event->key.repeat == 0) {
+    if (StateLoop::event->type == SDL_KEYUP && StateLoop::event->key.repeat == 0) {
         // Adjust the velocity
         switch (StateLoop::event->key.keysym.sym) {
-        case SDLK_UP:
-            this->velocity.y += speed;
+        case SDLK_w:
+            this->velocity.y = 0;
             break;
-        case SDLK_DOWN:
-            this->velocity.y -= speed;
+        case SDLK_s:
+            this->velocity.y = 0;
             break;
-        case SDLK_LEFT:
-            this->velocity.x += speed;
+        case SDLK_a:
+            this->velocity.x = 0;
             break;
-        case SDLK_RIGHT:
-            this->velocity.x -= speed;
+        case SDLK_d:
+            this->velocity.x = 0;
             break;
         }
     }
 
-    if (StateLoop::event->type == SDL_MOUSEWHEEL && StateLoop::event->key.repeat == 0) {
+    if (StateLoop::event->type == SDL_MOUSEWHEEL) {
+
+        int cursor_x, cursor_y;
+
+        SDL_PumpEvents();
+        SDL_GetMouseState(&cursor_x, &cursor_y);
+
+        auto befZoom = screenToWorld(cursor_x, cursor_y);
 
         if (StateLoop::event->wheel.y > 0) // scroll up zoom in
         {
-            zoomScale += 0.1f;
+            // std::cout << "zoom in: " << StateLoop::event->wheel.preciseY << std::endl;
+            zoomScale *= 1.1f;
             StateLoop::event->wheel.y = 0;
+
         } else if (StateLoop::event->wheel.y < 0) // scroll down zoom out
         {
-            zoomScale -= 0.1f;
+            // std::cout << "zoom out: " << StateLoop::event->wheel.preciseY << std::endl;
+            zoomScale *= 0.9f;
             StateLoop::event->wheel.y = 0;
         }
 
-        if (zoomScale <= 0.1) {
-            zoomScale = 0.1;
-        } else if (zoomScale >= 10) {
-            zoomScale = 10;
-        }
+        SDL_PumpEvents();
+        SDL_GetMouseState(&cursor_x, &cursor_y);
 
-        SDL_GetMouseState(&x, &y);
+        auto aftZoom = screenToWorld(cursor_x, cursor_y);
+        auto diff = befZoom - aftZoom;
+
+        this->position.x += diff.x;
+        this->position.y += diff.y;
     }
 }
 
 bool Camera::inCamera(float x, float y)
 {
-    bool inX = x >= this->dest.x && x <= (this->dest.x + Window::camera->dest.w);
-    bool inY = y >= this->dest.y && y <= (this->dest.y + Window::camera->dest.h);
-    // return true;
+    bool inX = x >= this->position.x && x <= (this->position.x + Window::camera->dest.w);
+    bool inY = y >= this->position.y && y <= (this->position.y + Window::camera->dest.h);
+
     return inX && inY;
 }
 
@@ -129,22 +140,36 @@ float Camera::getZoomScale()
     return this->zoomScale;
 }
 
+vec2 Camera::worldToScreen(float world_x, float world_y)
+{
+    return { (world_x - this->position.x) * (zoomScale), (world_y - this->position.y) * (zoomScale) };
+}
+
+vec2 Camera::screenToWorld(float screen_x, float screen_y)
+{
+    return { (screen_x / zoomScale) + position.x, (screen_y / zoomScale) + position.y };
+}
+
 void Camera::update()
 {
+    SDL_RenderSetScale(Window::windowRenderer.get(), zoomScale, zoomScale);
     this->position += this->velocity;
-
-    // camera position
-    this->dest.x = this->position.x- x * (1 / this->zoomScale);
-    this->dest.y = this->position.y- y * (1 / this->zoomScale);
 
     // renderable size
     this->dest.w = (1 / this->zoomScale) * this->src.w;
     this->dest.h = (1 / this->zoomScale) * this->src.h;
 
+    //  camera position
+    this->dest.x = static_cast<int>(this->position.x);
+    this->dest.y = static_cast<int>(this->position.y);
+
 #if DEBUG
+    int x, y;
+    SDL_PumpEvents();
+    SDL_GetMouseState(&x, &y);
     std::cout << "==============================\n";
-    std::cout << " Camera X: " << this->dest.x << "\n";
-    std::cout << " Camera Y: " << this->dest.y << "\n";
+    std::cout << " cursor X: " << screenToWorld(x, y).x << "\n";
+    std::cout << " cursor Y: " << screenToWorld(x, y).y << "\n";
     std::cout << " Camera Velocity: " << this->velocity.x << ", " << this->velocity.y << "\n";
     std::cout << " Renderable size W: " << this->dest.w << "\n";
     std::cout << " Renderable size H: " << this->dest.h << "\n";

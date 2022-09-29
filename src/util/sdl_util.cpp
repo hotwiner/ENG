@@ -74,8 +74,12 @@ void sdl_utils::render_independent(SDL_Texture* texture, SDL_Rect* srcR, SDL_Rec
 {
     if (Window::camera->inCamera(destR->x, destR->y)) {
 
-        auto scale = Window::camera->getZoomScale();
-        SDL_Rect temp = { static_cast<int>((destR->x - Window::camera->dest.x) * scale), static_cast<int>((destR->y - Window::camera->dest.y) * scale), static_cast<int>(destR->w * scale), static_cast<int>(destR->h * scale) };
+        SDL_Rect temp = {
+            static_cast<int>(destR->x - Window::camera->dest.x),
+            static_cast<int>(destR->y - Window::camera->dest.y),
+            static_cast<int>(destR->w),
+            static_cast<int>(destR->h)
+        };
         SDL_RenderCopyEx(Window::windowRenderer.get(), texture, NULL, &temp, 0.0, NULL, SDL_FLIP_NONE);
     }
 }
