@@ -2,7 +2,7 @@
 
 #include "entity/components/sprite.h"
 #include "entity/components/transform.h"
-
+#include "grid_map/grid_map.h"
 #include <SDL2/SDL_render.h>
 #include <SDL2/SDL_stdinc.h>
 #include <bitset>
@@ -10,8 +10,6 @@
 #include <map>
 #include <memory>
 #include <vector>
-
-class CollisionMap;
 
 class EntityManager {
 public:
@@ -21,40 +19,9 @@ public:
     void addEntity(std::shared_ptr<Entity> entity);
     void deleteEntity(int id);
     void deleteEntity(std::shared_ptr<Entity> entity);
-
-    // This includes all useable textures and their surfaces
-    static std::map<const std::string, std::pair<std::shared_ptr<SDL_Texture>, std::shared_ptr<SDL_Surface>>> assetmap;
-    static std::unique_ptr<CollisionMap> collmap;
-
 private:
     std::vector<int> freeIDs;
     int setEntityID();
     static std::vector<std::shared_ptr<Entity>> entites;
     int entityID = 0;
-};
-
-class CollisionMap {
-    friend class EntityManager;
-
-public:
-    CollisionMap(int width = 1000, int height = 1000);
-    bool posOccupied(int x, int y);
-    bool posOccupied(vec2 pos);
-    bool occupyPos(int x, int y);
-    bool occupyPos(vec2 pos);
-    void unOccupyPos(int x, int y);
-    void unOccupyPos(vec2 pos);
-    bool updateOccupancy(int src_x, int src_y, int target_x, int target_y);
-    bool updateOccupancy(vec2 source, vec2 target);
-    vec2 toGridPos(vec2 pos);
-    void reset();
-    static int gridWidth;
-    static int gridHeight;
-
-protected:
-    std::bitset<10000000UL> map;
-    
-private:
-    int width;
-    int height;
 };

@@ -29,13 +29,17 @@ bool StateLoop::quit;
 
 StateLoop::StateLoop(int width, int height)
 {
-    this->window = std::make_unique<Window>(Window(width, height));
-    this->event = std::make_unique<SDL_Event>();
+    this->assetMan = std::make_unique<AssetManager>();
     this->entityMan = std::make_unique<EntityManager>();
+    this->mapMan = std::make_unique<MapManager>();
+    this->event = std::make_unique<SDL_Event>();
+    this->window = std::make_unique<Window>(Window(width, height));
 }
 
 void StateLoop::init()
 {
+    this->assetMan->loadAssets();
+    this->mapMan->init();
     this->entityMan->init();
     this->quit = false;
 }
@@ -43,18 +47,10 @@ void StateLoop::init()
 // This updates everything
 void StateLoop::update()
 {
-    this->startTime = SDL_GetTicks64();
-
     this->handleEvent();
+    this->mapMan->update();
     this->entityMan->update();
     this->window->update();
-
-    this->deltaTime = SDL_GetTicks64() - this->startTime;
-    if (this->timeDelay > this->deltaTime) {
-
-        SDL_Delay(this->timeDelay - this->deltaTime);
-    }
-    auto fps = 1000.0f / deltaTime;
 }
 
 void StateLoop::handleEvent()
@@ -80,9 +76,18 @@ void StateLoop::run()
     this->init();
 
     while (!this->quit) {
+        this->startTime = SDL_GetTicks64();
+
         this->window->clean();
         this->update(); // update everything
         this->window->render();
+
+        this->deltaTime = SDL_GetTicks64() - this->startTime;
+        if (this->timeDelay > this->deltaTime) {
+
+            SDL_Delay(this->timeDelay - this->deltaTime);
+        }
+        auto fps = 1000.0f / deltaTime;
     }
 
     SDL_Quit();

@@ -26,7 +26,7 @@ namespace sdl_utils {
     void draw_surface(SDL_Surface* surface, SDL_Rect* srcR, SDL_Rect* destR);
 
     void render_whole(std::shared_ptr<SDL_Surface> surface, std::shared_ptr<SDL_Renderer> renderer);
-    void render_independent(SDL_Texture* texture, SDL_Rect* srcR, SDL_Rect* destR);
+    void render_independent(SDL_Texture* texture, SDL_Rect* srcR, SDL_Rect* destR, bool renderOutsideCam = false);
 
     void debug_msg();
 }

@@ -62,7 +62,7 @@ vec2 Entity::getPosition()
 vec2 Entity::getGridPosition()
 {
     return {
-        std::floor(this->position.x / CollisionMap::gridWidth) + 1,
-        std::floor(this->position.y / CollisionMap::gridHeight) + 1
+        std::floor(this->position.x / Map::gridWidth) + 1,
+        std::floor(this->position.y / Map::gridHeight) + 1
     };
 }

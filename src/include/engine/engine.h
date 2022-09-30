@@ -1,12 +1,16 @@
 #pragma once
 
+#include "../../include/game/asset_manager.h"
+#include "../../include/game/entity_manager.h"
+#include "../../include/game/map_manager.h"
 #include "window.h"
 #include <SDL2/SDL.h>
 #include <iostream>
-#include "../../include/game/entity_manager.h"
+#include <memory>
 
 class StateLoop {
     friend class Engine;
+
 public:
     StateLoop(int width, int height);
     void run();
@@ -21,9 +25,13 @@ public:
     // Handles key inputs ect.
     static std::unique_ptr<SDL_Event> event;
     static const Uint8* keyboardState;
-    // Handles entities 
+    // Handles entities
     std::unique_ptr<EntityManager> entityMan;
-    
+    // Handles mapping
+    std::unique_ptr<MapManager> mapMan;
+    // Handles assets
+    std::unique_ptr<AssetManager> assetMan;
+
 protected:
     static bool quit;
     const Uint32 FPS = 60;
@@ -35,7 +43,7 @@ protected:
 
 class Engine {
 public:
-    Engine(int width=1920, int height=1080);
+    Engine(int width = 1920, int height = 1080);
     void launch();
     void terminate();
     std::unique_ptr<StateLoop> stateLoop;

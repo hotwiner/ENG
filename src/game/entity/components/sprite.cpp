@@ -1,5 +1,5 @@
 #include "../../../include/game/entity/components/sprite.h"
-#include "../../../include/game/entity_manager.h"
+#include "../../../include/game/asset_manager.h"
 #include "../../../include/util/sdl_util.h"
 #include <SDL2/SDL_rect.h>
 #include <SDL2/SDL_surface.h>
@@ -41,12 +41,12 @@ void Sprite::init()
 
 std::shared_ptr<SDL_Texture> Sprite::getTexture()
 {
-    return EntityManager::assetmap.at(this->assetPath).first;
+    return AssetManager::assetmap.at(this->assetPath).first;
 }
 
 std::shared_ptr<SDL_Surface> Sprite::getSurface()
 {
-    return EntityManager::assetmap.at(this->assetPath).second;
+    return AssetManager::assetmap.at(this->assetPath).second;
 }
 
 void Sprite::scale(int scale)

@@ -17,7 +17,10 @@ set(
     ${INCLUDE}/game/entity/components/transform.h
     ${INCLUDE}/game/entity/entity_component.h
     ${INCLUDE}/game/entity_manager.h
+    ${INCLUDE}/game/grid_map/grid_map.h
     ${INCLUDE}/util/vec2.h
+    ${INCLUDE}/game/map_manager.h
+    ${INCLUDE}/game/asset_manager.h
 )
 
 # Sources
@@ -31,7 +34,11 @@ set(
     ${SRC}/game/entity/components/transform.cpp
     ${SRC}/game/entity_manager.cpp
     ${SRC}/game/entity/entity_component.cpp
+    ${SRC}/game/grid_map/grid_map.cpp
     ${SRC}/util/asset_util.cpp
+    ${SRC}/game/map_manager.cpp
+    ${SRC}/game/asset_manager.cpp
+
 )
 
 # Linkers

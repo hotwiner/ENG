@@ -70,9 +70,9 @@ void sdl_utils::render_whole(std::shared_ptr<SDL_Surface> surface, std::shared_p
 }
 
 // Render each part independently
-void sdl_utils::render_independent(SDL_Texture* texture, SDL_Rect* srcR, SDL_Rect* destR)
+void sdl_utils::render_independent(SDL_Texture* texture, SDL_Rect* srcR, SDL_Rect* destR, bool renderOutsideCam)
 {
-    if (Window::camera->inCamera(destR->x, destR->y)) {
+    if (renderOutsideCam || Window::camera->inCamera(destR->x, destR->y)) {
 
         SDL_Rect temp = {
             static_cast<int>(destR->x - Window::camera->dest.x),
