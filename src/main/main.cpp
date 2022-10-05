@@ -4,7 +4,7 @@
 #include <iostream>
 #include <memory>
 
-const int entityPopulation = 100;
+const int entityPopulation = 1;
 
 int main()
 {
@@ -18,9 +18,11 @@ int main()
         std::shared_ptr<Entity> entity_buffer = std::make_shared<Entity>();
         entity_buffer->addComponent<Sprite>("/assests/man2.gif", 65, 64);
         // starting position
-        entity_buffer->setPos(rand()%100, rand()%100);
+        entity_buffer->setPos(0, 0);
         // initial movement vector
-        entity_buffer->addComponent<Transform>(600, 600, 2, false);
+        entity_buffer->addComponent<Transform>(1,false);
+        entity_buffer->getComponent<Transform>()->addPathTarget({600,0});
+          entity_buffer->getComponent<Transform>()->addPathTarget({600,600});
         // initial sprite scale
         entity_buffer->getComponent<Sprite>()->scale(1);
         engine->stateLoop->entityMan->addEntity(entity_buffer);

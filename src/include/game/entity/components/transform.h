@@ -4,14 +4,18 @@
 #include "../entity_component.h"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_stdinc.h>
+#include <vector>
+#include <queue>
+
 
 class Transform : public Component {
 public:
-    Transform(float targetX = 0, float targetY = 0, float s = 0, bool enableCollider = false);
+    Transform(float s = 0, bool enableCollider = false);
     virtual ~Transform();
     void init() override;
     void update() override;
-    void setTarget(vec2 t);
+    void setCurrTarget(vec2 newTarget);
+    void addPathTarget(vec2 newPathTarget);
 
 protected:
     vec2 heading;
@@ -19,7 +23,9 @@ protected:
     bool enableCollider;
 
 private:
-    vec2 move();
+    std::queue<vec2> path;
     vec2 target;
     vec2 velocity;
+    vec2 move();
+    vec2 updateCurrTarget();
 };

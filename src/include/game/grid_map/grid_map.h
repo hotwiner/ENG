@@ -44,7 +44,7 @@ protected:
     void update() override;
 
 private:
-    static std::bitset<10000000UL> map;
+    static std::bitset<250000UL> map;
 };
 
 class VisualMap : public Map {
