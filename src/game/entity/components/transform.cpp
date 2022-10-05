@@ -3,60 +3,58 @@
 #include "../../../include/util/vec2.h"
 #include <SDL2/SDL_stdinc.h>
 
-Transform::Transform(float targetX, float targetY, float s, bool c)
+Transform::Transform(float s, bool c)
     : speed(s)
     , enableCollider(c)
 {
-    this->target = { .x = targetX, .y = targetY };
 }
 
 Transform::~Transform()
 {
 }
 
-void Transform::update()
-{
-    if (this->enableCollider) {
-        // Check if next posiition is moveable
-        vec2 currGridPos = MapManager::collisionMap->toGridPos(this->entity->getPosition());
-        vec2 targetGridPos = MapManager::collisionMap->toGridPos(this->entity->getPosition() + this->velocity);
-
-        if (MapManager::collisionMap->updateOccupancy(currGridPos, targetGridPos)) {
-            Transform::move();
-        }
-    } else {
-        Transform::move();
-    }
-}
-
 void Transform::init()
 {
-    this->heading = ((this->entity->getPosition() - this->target) * -1).normalize();
-    this->velocity = this->heading * this->speed;
-    if (this->enableCollider) {
-        vec2 pos = MapManager::collisionMap->toGridPos(this->entity->getPosition());
-        MapManager::collisionMap->occupyPos(pos);
-    }
+    this->target = this->entity->getPosition();
+    Transform::updateCurrTarget();
 }
 
-void Transform::setTarget(vec2 t)
+void Transform::update()
 {
-    this->target = t;
+    Transform::move();
+}
+
+void Transform::setCurrTarget(vec2 newTarget)
+{
+    this->target = newTarget;
     this->heading = ((this->entity->getPosition() - this->target) * -1).normalize();
     this->velocity = this->heading * this->speed;
+}
+
+void Transform::addPathTarget(vec2 newPathTarget)
+{
+    this->path.push(newPathTarget);
 }
 
 vec2 Transform::move()
 {
-    if ((this->entity->getPosition()) != this->target) {
-        if (this->entity->getPosition() + this->velocity > this->target) {
+    {
+        auto leftDist = this->entity->getPosition() - this->target;
+        if ((this->entity->getPosition()) == this->target || this->velocity.magnitude() > leftDist.magnitude()) {
             this->entity->setPos(this->target);
+            Transform::updateCurrTarget();
         } else {
             this->entity->setPos(this->entity->getPosition() + this->velocity);
         }
-    } else {
-        this->entity->setPos(this->target);
     }
-
     return this->entity->getPosition();
+}
+
+vec2 Transform::updateCurrTarget()
+{
+    if (!path.empty()) {
+        this->setCurrTarget(path.front());
+        this->path.pop();
+    }
+    return this->target;
 }

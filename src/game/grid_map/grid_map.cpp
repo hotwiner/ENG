@@ -11,7 +11,7 @@ int Map::gridHeight = 32;
 int Map::width = 500;
 int Map::height =500;
 
-std::bitset<10000000UL> CollisionMap::map;
+std::bitset<250000UL> CollisionMap::map;
 
 CollisionMap::CollisionMap()
 {
@@ -19,7 +19,7 @@ CollisionMap::CollisionMap()
 
 void CollisionMap::init()
 {
-    auto buff = new std::bitset<10000000UL>;
+    auto buff = new std::bitset<250000UL>;
     CollisionMap::map = *buff;
     delete buff;
 }
