@@ -2,6 +2,7 @@
 #include "../../setup_info.h"
 #include "../include/engine/engine.h"
 #include "../include/util/sdl_util.h"
+#include "../include/game/entity/components/path_finding.h"
 #include <SDL2/SDL_events.h>
 #include <cmath>
 #include <cstddef>
@@ -81,7 +82,7 @@ void Camera::event()
         SDL_GetMouseState(&cursor_x, &cursor_y);
 
         auto befZoom = screenToWorld(cursor_x, cursor_y);
-
+        
         if (StateLoop::event->wheel.y > 0) // scroll up zoom in
         {
             // std::cout << "zoom in: " << StateLoop::event->wheel.preciseY << std::endl;
@@ -103,6 +104,16 @@ void Camera::event()
 
         this->position.x += diff.x;
         this->position.y += diff.y;
+    }
+
+    if (StateLoop::event->type == SDL_MOUSEBUTTONDOWN)
+    {
+        int cursor_x, cursor_y;
+
+        SDL_PumpEvents();
+        SDL_GetMouseState(&cursor_x, &cursor_y);
+
+        PathFinding::setTarget(screenToWorld(cursor_x, cursor_y));
     }
 }
 

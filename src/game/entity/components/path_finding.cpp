@@ -2,13 +2,15 @@
 #include "../../../include/game/entity/components/transform.h"
 #include "../../../include/game/grid_map/grid_map.h"
 #include "../../../include/game/map_manager.h"
+#include <queue>
+#include <utility>
 #include <vector>
 
+bool PathFinding::newTarget;
+vec2 PathFinding::realTarget;
+
 PathFinding::PathFinding(vec2 realTarget)
-    : realTarget(realTarget)
 {
-    // this->entity->requireComponent<Transform>();
-    // std::cout << "has transform" << std::endl;
 }
 
 PathFinding::~PathFinding()
@@ -17,21 +19,21 @@ PathFinding::~PathFinding()
 
 void PathFinding::init()
 {
-    // findPath();
+    this->entity->requireComponent<Transform>();
 }
-bool one = true;
+
 void PathFinding::update()
 {
-    if (one) {
-
+    if (newTarget) {
+        newTarget = false;
         findPath();
-        one = false;
     }
 }
 
 void PathFinding::setTarget(vec2 realTarget)
 {
-    this->realTarget = (realTarget);
+    PathFinding::realTarget = realTarget;
+    newTarget = true;
 }
 
 int toGridIndex(vec2 pos)
@@ -42,40 +44,50 @@ int toGridIndex(vec2 pos)
 
 void PathFinding::findPath()
 {
-    // pair <current tile, tiles until current tile>
-    std::vector<int> predecessors;
-    std::queue<std::pair<int, std::vector<int>>> pending;
-    int currentGridIndex;
+    std::queue<vec2> clear;
+    std::swap(this->entity->getComponent<Transform>()->path, clear);
+    // tuple(state, actions from start to this state)
+    std::queue<std::pair<int, std::vector<int>>> que;
 
-    currentGridIndex = toGridIndex(this->entity->getPosition());
+    int startIndex = toGridIndex(entity->getPosition());
+    int targetIndex = toGridIndex(this->realTarget);
+    std::vector<int> indexPath;
 
-    pending.emplace(currentGridIndex, predecessors);
+    que.push(std::make_pair(startIndex, indexPath));
 
-    while (!pending.empty()) {
+    std::vector<int> discovered = { startIndex };
 
-        auto current = pending.front().first;
-        std::vector<int> indexPath = pending.front().second;
-        pending.pop();
+    auto is_visited = [&discovered](int index) -> bool {
+        if (std::find(discovered.begin(), discovered.end(), index) != discovered.end()) {
+            return true;
+        }
+        return false;
+    };
 
-        // if we reach destination than we have the shortest path
-        if (current == toGridIndex(this->realTarget)) {
-            for (auto index : indexPath) {
+    auto is_obstacle = [](int index) -> bool {
+        return CollisionMap::map[index];
+    };
+
+    while (!que.empty()) {
+        auto frontier = que.front();
+        que.pop();
+
+        if (frontier.first == targetIndex) {
+            for (auto index : frontier.second) {
 
                 float gridX = index % Map::width;
                 float gridY = (index - gridX) / Map::width;
 
                 this->entity->getComponent<Transform>()->addPathTarget(Map::toRealPos({ gridX, gridY }));
-                std::cout << gridX <<  gridY << std::endl;
             }
             break;
         }
 
-        // if not visited move to a neighbor tile
-        if (!isVisited(current)) {
-            visitedGridIndexes.push_back(current);
-            for (auto neigbour : getNeighbours(current)) {
-                if(!isVisited(neigbour))
-                emplaceNeighbour(indexPath, pending, neigbour);
+        for (auto& neighbour : getNeighbours(frontier.first)) {
+            if (!is_visited(neighbour) && !is_obstacle(neighbour)) {
+                discovered.push_back(neighbour);
+                frontier.second.push_back(neighbour);
+                que.push(std::make_pair(neighbour, frontier.second));
             }
         }
     }
@@ -106,23 +118,4 @@ std::vector<int> PathFinding::getNeighbours(int current)
         neighbours.push_back(current - 1 + Map::width);
 
     return neighbours;
-}
-
-bool PathFinding::isVisited(int gridIndex)
-{
-    if (std::find(this->visitedGridIndexes.begin(), this->visitedGridIndexes.end(), gridIndex) != this->visitedGridIndexes.end()) {
-        return true;
-    }
-    return false;
-}
-
-void PathFinding::emplaceNeighbour(
-    std::vector<int>& predecessors,
-    std::queue<std::pair<int, std::vector<int>>>& pending,
-    int currentGridIndex)
-{
-    if (!CollisionMap::map[currentGridIndex]) {
-        predecessors.push_back(currentGridIndex);
-        pending.emplace(std::make_pair(currentGridIndex, predecessors));
-    }
 }

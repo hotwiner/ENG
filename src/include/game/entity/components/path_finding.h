@@ -14,18 +14,13 @@ public:
     virtual ~PathFinding();
     void init() override;
     void update() override;
-    void setTarget(vec2 realTarget); // Saves real position as grid
+    static void setTarget(vec2 realTarget); // Saves real position as grid
 
 protected:
     void findPath(); // finds and saves real path positions in transform comp
 
 private:
-    vec2 realTarget; // As grid target on collision map
+    static bool newTarget;
+    static vec2 realTarget; // As grid target on collision map
     std::vector<int> getNeighbours(int current); // returns moveable grid neighbours
-    std::vector<int> visitedGridIndexes;
-    bool isVisited(int gridIndexx);
-    void emplaceNeighbour(
-        std::vector<int>& predecessors,
-        std::queue<std::pair<int, std::vector<int>>>& pending,
-        int currentGridIndex);
 };

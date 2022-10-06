@@ -44,6 +44,15 @@ void CollisionMap::init()
     for(int i = 0; i < 10; ++i)
     {
         map[Map::width*i +10] = 1;
+        if(i < 7)
+        map[Map::width*10 +i] = 1;
+
+    }
+
+    for(int i = 0; i < 20; ++i)
+    {
+
+        map[Map::width*i +20] = 1;
     }
 }
 

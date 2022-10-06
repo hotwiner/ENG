@@ -8,7 +8,7 @@ const int entityPopulation = 1;
 
 int main()
 {
-    std::unique_ptr<Engine> engine = std::make_unique<Engine>();
+    std::unique_ptr<Engine> engine = std::make_unique<Engine>(3000, 2000);
 
     // sets seed for random number generator
     srand((unsigned)time(NULL));
