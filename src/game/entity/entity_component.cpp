@@ -49,7 +49,8 @@ void Entity::init()
 
 void Entity::update()
 {
-    for (const auto& comp : this->components) {
+    for (const auto& comp : this->components)
+    {
         comp.second->update();
     }
 }
@@ -57,12 +58,4 @@ void Entity::update()
 vec2 Entity::getPosition()
 {
     return this->position;
-}
-
-vec2 Entity::getGridPosition()
-{
-    return {
-        std::floor(this->position.x / Map::gridWidth) + 1,
-        std::floor(this->position.y / Map::gridHeight) + 1
-    };
 }

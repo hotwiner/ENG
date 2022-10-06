@@ -2,6 +2,7 @@
 
 #include "entity/components/sprite.h"
 #include "entity/components/transform.h"
+#include "entity/components/path_finding.h"
 #include "grid_map/grid_map.h"
 #include <SDL2/SDL_render.h>
 #include <SDL2/SDL_stdinc.h>

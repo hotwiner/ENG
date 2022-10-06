@@ -23,7 +23,7 @@ Sprite::~Sprite()
 
 void Sprite::draw()
 {
-    sdl_utils::render_independent(this->getTexture().get(), &this->src, &this->des);
+    sdl_util::render_independent(this->getTexture().get(), &this->src, &this->des);
 }
 
 void Sprite::update()

@@ -8,7 +8,7 @@ Engine::Engine(int width, int height)
     this->stateLoop = std::make_unique<StateLoop>(width, height);
 
     if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
-        sdl_utils::debug_msg();
+        sdl_util::debug_msg();
     }
 }
 
@@ -30,8 +30,8 @@ bool StateLoop::quit;
 StateLoop::StateLoop(int width, int height)
 {
     this->assetMan = std::make_unique<AssetManager>();
+     this->mapMan = std::make_unique<MapManager>();
     this->entityMan = std::make_unique<EntityManager>();
-    this->mapMan = std::make_unique<MapManager>();
     this->event = std::make_unique<SDL_Event>();
     this->window = std::make_unique<Window>(Window(width, height));
 }

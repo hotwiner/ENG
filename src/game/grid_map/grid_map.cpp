@@ -11,6 +11,24 @@ int Map::gridHeight = 32;
 int Map::width = 500;
 int Map::height =500;
 
+
+
+vec2 Map::toGridPos(vec2 realPos)
+{
+    return {
+        std::floor(realPos.x / Map::gridWidth),
+        std::floor(realPos.y / Map::gridHeight)
+    };
+}
+
+vec2 Map::toRealPos(vec2 gridPos)
+{
+    return {
+        std::floor(gridPos.x * Map::gridWidth),
+        std::floor(gridPos.y * Map::gridHeight)
+    };
+}
+
 std::bitset<250000UL> CollisionMap::map;
 
 CollisionMap::CollisionMap()
@@ -22,24 +40,21 @@ void CollisionMap::init()
     auto buff = new std::bitset<250000UL>;
     CollisionMap::map = *buff;
     delete buff;
+
+    for(int i = 0; i < 10; ++i)
+    {
+        map[Map::width*i +10] = 1;
+    }
 }
 
 void CollisionMap::update()
 {
 }
 
-vec2 CollisionMap::toGridPos(vec2 pos)
-{
-    return {
-        std::floor(pos.x / Map::gridWidth) + 1,
-        std::floor(pos.y / Map::gridHeight) + 1
-    };
-}
-
 bool CollisionMap::occupyPos(int x, int y)
 {
     if (!posOccupied(x, y)) {
-        map[(y - 1) * this->width + x] = 1;
+        map[(y) * this->width + x] = 1;
         return true;
     }
     return false;
@@ -48,7 +63,7 @@ bool CollisionMap::occupyPos(int x, int y)
 bool CollisionMap::occupyPos(vec2 pos)
 {
     if (!posOccupied(pos)) {
-        map[((int)pos.y - 1) * this->width + (int)pos.x] = 1;
+        map[(pos.y) * this->width + pos.x] = 1;
         return true;
     }
     return false;
@@ -56,12 +71,12 @@ bool CollisionMap::occupyPos(vec2 pos)
 
 void CollisionMap::unOccupyPos(int x, int y)
 {
-    map[(y - 1) * this->width + x] = 0;
+    map[(y) * this->width + x] = 0;
 }
 
 void CollisionMap::unOccupyPos(vec2 pos)
 {
-    map[((int)pos.y - 1) * this->width + (int)pos.x] = 0;
+    map[(pos.y) * this->width + pos.x] = 0;
 }
 
 bool CollisionMap::updateOccupancy(vec2 grid_src, vec2 trg)
@@ -90,7 +105,7 @@ bool CollisionMap::updateOccupancy(int src_x, int src_y, int target_x, int targe
 
 bool CollisionMap::posOccupied(vec2 pos)
 {
-    if (map[((int)pos.y - 1) * this->width + (int)pos.x] == 1) {
+    if (map[(pos.y) * this->width + pos.x] == 1) {
         return true;
     }
     return false;
@@ -98,7 +113,7 @@ bool CollisionMap::posOccupied(vec2 pos)
 
 bool CollisionMap::posOccupied(int x, int y)
 {
-    if (map[(y - 1) * this->width + x] == 1) {
+    if (map[(y) * this->width + x] == 1) {
         return true;
     }
     return false;
@@ -125,12 +140,12 @@ void VisualMap::update()
 
 void VisualMap::drawMap()
 {
-    sdl_utils::render_independent(VisualMap::mapTexture.get(), NULL, &this->dest, true);
+    sdl_util::render_independent(VisualMap::mapTexture.get(), NULL, &this->dest, true);
 }
 
 void VisualMap::createMapTexture()
 {
-    std::shared_ptr<SDL_Surface> mapSurface = sdl_utils::make_shared_surface(SDL_CreateRGBSurface(0, width * gridWidth, height * gridHeight, 32, 0, 0, 0, 0));
+    std::shared_ptr<SDL_Surface> mapSurface = sdl_util::make_shared_surface(SDL_CreateRGBSurface(0, width * gridWidth, height * gridHeight, 32, 0, 0, 0, 0));
 
     SDL_Rect grid_dest;
     SDL_Rect grid_src;
@@ -143,8 +158,8 @@ void VisualMap::createMapTexture()
     for (int row = 0; row < Map::height; row++) {
         for (int col = 0; col < Map::width; col++) {
 
-            grid_dest.x = row * Map::gridWidth;
-            grid_dest.y = col * Map::gridHeight;
+            grid_dest.y = row * Map::gridWidth;
+            grid_dest.x = col * Map::gridHeight;
 
             if (CollisionMap::map[row * Map::width + col]) {
                 SDL_BlitSurface(AssetManager::assetmap.at("/assests/wall.png").second.get(), NULL, mapSurface.get(), &grid_dest);
@@ -159,8 +174,8 @@ void VisualMap::createMapTexture()
     this->dest.x = 0;
     this->dest.y = 0;
 
-    VisualMap::mapTexture = sdl_utils::surface_to_texture(mapSurface.get());
+    VisualMap::mapTexture = sdl_util::surface_to_texture(mapSurface.get());
     if (mapTexture.get() == nullptr) {
-        sdl_utils::debug_msg();
+        sdl_util::debug_msg();
     }
 }

@@ -15,6 +15,7 @@ set(
     ${INCLUDE}/util/sdl_util.h
     ${INCLUDE}/game/entity/components/sprite.h
     ${INCLUDE}/game/entity/components/transform.h
+    ${INCLUDE}/game/entity/components/path_finding.h
     ${INCLUDE}/game/entity/entity_component.h
     ${INCLUDE}/game/entity_manager.h
     ${INCLUDE}/game/grid_map/grid_map.h
@@ -32,6 +33,7 @@ set(
     ${SRC}/util/sdl_util.cpp
     ${SRC}/game/entity/components/sprite.cpp
     ${SRC}/game/entity/components/transform.cpp
+    ${SRC}/game/entity/components/path_finding.cpp
     ${SRC}/game/entity_manager.cpp
     ${SRC}/game/entity/entity_component.cpp
     ${SRC}/game/grid_map/grid_map.cpp

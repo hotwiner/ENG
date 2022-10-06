@@ -21,9 +21,9 @@ Window::Window(int w, int h)
 {
     Window::height = h;
     Window::width = w;
-    Window::window = sdl_utils::make_shared_window(SDL_CreateWindow("Engine", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, this->width, this->height, SDL_WINDOW_OPENGL));
-    Window::windowRenderer = sdl_utils::make_shared_renderer(SDL_CreateRenderer(window.get(), -1, SDL_RENDERER_ACCELERATED));
-    Window::windowSurface = sdl_utils::make_shared_surface(SDL_CreateRGBSurface(0, 10000, 10000, 32, 0, 0, 0, 0));
+    Window::window = sdl_util::make_shared_window(SDL_CreateWindow("Engine", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, this->width, this->height, SDL_WINDOW_OPENGL));
+    Window::windowRenderer = sdl_util::make_shared_renderer(SDL_CreateRenderer(window.get(), -1, SDL_RENDERER_ACCELERATED));
+    Window::windowSurface = sdl_util::make_shared_surface(SDL_CreateRGBSurface(0, 10000, 10000, 32, 0, 0, 0, 0));
     Window::camera = std::make_unique<Camera>();
 }
 

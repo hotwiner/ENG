@@ -20,9 +20,11 @@ int main()
         // starting position
         entity_buffer->setPos(0, 0);
         // initial movement vector
-        entity_buffer->addComponent<Transform>(1,false);
-        entity_buffer->getComponent<Transform>()->addPathTarget({600,0});
-          entity_buffer->getComponent<Transform>()->addPathTarget({600,600});
+        entity_buffer->addComponent<Transform>(10,false);
+        vec2 t ={600,0};
+        entity_buffer->addComponent<PathFinding>(t);
+        //entity_buffer->getComponent<Transform>()->addPathTarget({600,0});
+        //entity_buffer->getComponent<Transform>()->addPathTarget({600,600});
         // initial sprite scale
         entity_buffer->getComponent<Sprite>()->scale(1);
         engine->stateLoop->entityMan->addEntity(entity_buffer);

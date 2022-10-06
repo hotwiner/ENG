@@ -8,7 +8,7 @@
 #include <iostream>
 #include <memory>
 
-namespace sdl_utils {
+namespace sdl_util {
 
     std::shared_ptr<SDL_Window> make_shared_window(SDL_Window* window);
     std::shared_ptr<SDL_Renderer> make_shared_renderer(SDL_Renderer* renderer);

@@ -38,7 +38,7 @@ void Transform::addPathTarget(vec2 newPathTarget)
 
 vec2 Transform::move()
 {
-    {
+    if (speed > 0) {
         auto leftDist = this->entity->getPosition() - this->target;
         if ((this->entity->getPosition()) == this->target || this->velocity.magnitude() > leftDist.magnitude()) {
             this->entity->setPos(this->target);

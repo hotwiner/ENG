@@ -6,6 +6,8 @@
 #include <iostream>
 #include <map>
 #include <memory>
+#include <stdexcept>
+#include <string>
 #include <typeindex>
 #include <typeinfo>
 #include <vector>
@@ -34,7 +36,7 @@ public:
 
     int getID();
     vec2 getPosition();
-    vec2 getGridPosition();
+    
     std::string getName();
     std::string getTag();
 
@@ -43,19 +45,38 @@ public:
     void setPos(vec2 pos);
     void setPos(float x, float y);
 
-    template <typename T, typename... TArgs>
-    void addComponent(TArgs&&... mArgs)
+    template <typename T>
+    bool hasComponent()
     {
-        std::shared_ptr<T> comp(new T(std::forward<TArgs>(mArgs)...));
-        comp->entity = shared_from_this();
-        comp->init();
-        this->components.insert({ typeid(T), comp });
+        return (this->components.find(typeid(T)) != this->components.end());
     }
 
     template <typename T>
-    std::shared_ptr<T> getComponent() const
+    void requireComponent()
     {
-        return std::dynamic_pointer_cast<T>(this->components.at(typeid(T)));
+        if (!hasComponent<T>()) {
+            throw std::logic_error(typeid(T).name());
+        }
+    }
+
+    template <typename T, typename... TArgs>
+    void addComponent(TArgs&&... mArgs)
+    {
+        if (!hasComponent<T>()) {
+            std::shared_ptr<T> comp(new T(std::forward<TArgs>(mArgs)...));
+            comp->entity = shared_from_this();
+            comp->init();
+            this->components.insert({ typeid(T), comp });
+        }
+    }
+
+    template <typename T>
+    std::shared_ptr<T> getComponent()
+    {
+        if (hasComponent<T>()) {
+            return std::dynamic_pointer_cast<T>(this->components.at(typeid(T)));
+        }
+        return nullptr;
     }
 
 protected:

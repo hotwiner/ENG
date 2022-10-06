@@ -2,6 +2,7 @@
 
 #include "../../../../include/util/vec2.h"
 #include "../entity_component.h"
+#include "path_finding.h"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_stdinc.h>
 #include <vector>
@@ -9,6 +10,7 @@
 
 
 class Transform : public Component {
+    friend class PathFinding;
 public:
     Transform(float s = 0, bool enableCollider = false);
     virtual ~Transform();

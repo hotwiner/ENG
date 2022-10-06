@@ -16,6 +16,8 @@ public:
     virtual void init() = 0;
     virtual void update() = 0;
 
+    static vec2 toGridPos(vec2 pos);
+    static vec2 toRealPos(vec2 pos);
     static int gridWidth;
     static int gridHeight;
     static int width;
@@ -25,6 +27,7 @@ public:
 class CollisionMap : public Map {
     friend class MapManager;
     friend class VisualMap;
+    friend class PathFinding;
 
 public:
     CollisionMap();
@@ -36,7 +39,6 @@ public:
     void unOccupyPos(vec2 pos);
     bool updateOccupancy(int src_x, int src_y, int target_x, int target_y);
     bool updateOccupancy(vec2 source, vec2 target);
-    vec2 toGridPos(vec2 pos);
     void reset();
 
 protected:
